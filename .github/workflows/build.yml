@@ -20,7 +20,7 @@ jobs:
           java-version: '17'
 
       - name: Build with Gradle
-        run: gradlew.bat jar
+        run: gradle jar
 
       - name: Download Launch4j
         run: |
