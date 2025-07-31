@@ -34,12 +34,12 @@ namespace Sen.Shell
             if (!fs.FileExists(InternalPath))
             {
                 SystemConsole.Print(null, $"Internal Module not found, redownloading Internal from Github");
-                await GitHub.DownloadInternal(InternalPath, $"https://api.github.com/repos/Haruma-VN/Sen/releases/tags/internal");
+                // await GitHub.DownloadInternal(InternalPath, $"https://api.github.com/repos/Haruma-VN/Sen/releases/tags/internal");
             }
             if (!fs.DirectoryExists(Script_Directory) || !fs.FileExists(path.Resolve(path.Join($"{Script_Directory}", "main.js"))))
             {
                 SystemConsole.Print(null, $"Script Module not found, redownloading Script from Github");
-                await GitHub.DownloadScript(Script_Directory, $"https://api.github.com/repos/Haruma-VN/Sen/releases/tags/scripts");
+                // await GitHub.DownloadScript(Script_Directory, $"https://api.github.com/repos/Haruma-VN/Sen/releases/tags/scripts");
             }
             try
             {
