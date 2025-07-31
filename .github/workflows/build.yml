@@ -1,4 +1,4 @@
-name: Build and Release SEN Tool
+name: Build Shell Tool
 
 on:
   push:
@@ -13,35 +13,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          dotnet-version: 8.0.x
 
-      - name: Compile with javac
+      - name: Restore and Build
         run: |
-          mkdir out
-          javac -d out src/Main.java
+          dotnet publish -c Release -r win-x64 --self-contained true
+          dotnet publish -c Release -r win-x86 --self-contained true
+          dotnet publish -c Release -r win-arm64 --self-contained true
 
-      - name: Package into JAR
+      - name: Zip outputs
         run: |
-          jar cfe sen.jar Main -C out .
+          Compress-Archive -Path "bin/Release/net8.0/win-x64/publish/*" -DestinationPath "shell.win-x64.zip"
+          Compress-Archive -Path "bin/Release/net8.0/win-x86/publish/*" -DestinationPath "shell.win-x86.zip"
+          Compress-Archive -Path "bin/Release/net8.0/win-arm64/publish/*" -DestinationPath "shell.win-arm64.zip"
+        shell: pwsh
 
-      - name: Download Launch4j
-        run: |
-          curl -L -o launch4j.zip https://sourceforge.net/projects/launch4j/files/latest/download
-          tar -xf launch4j.zip || unzip launch4j.zip
-        shell: bash
-
-      - name: Wrap into EXE
-        run: |
-          ./launch4j*/launch4j .github/launch4j.xml
-        shell: bash
-
-      - name: Upload EXE to Release
+      - name: Upload Artifacts
         uses: softprops/action-gh-release@v1
         with:
-          files: sen.exe
+          files: |
+            shell.win-x64.zip
+            shell.win-x86.zip
+            shell.win-arm64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
