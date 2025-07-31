@@ -31,11 +31,13 @@ namespace Sen.Shell
             var SystemConsole = new SystemImplement();
             var path = new ImplementPath();
             var fs = new FileSystem();
-            if (!fs.FileExists(InternalPath))
-            {
-                SystemConsole.Print(null, $"Internal Module not found, redownloading Internal from Github");
-                await GitHub.DownloadInternal(InternalPath, $"https://api.github.com/repos/Haruma-VN/Sen/releases/tags/internal");
-            }
+
+            // REMOVE OR COMMENT OUT THIS BLOCK
+            // if (!fs.FileExists(InternalPath))
+            // {
+                // SystemConsole.Print(null, $"Internal Module not found, redownloading Internal from Github");
+                // await GitHub.DownloadInternal(InternalPath, $"https://api.github.com/repos/Haruma-VN/Sen/releases/tags/internal");
+            // }
             if (!fs.DirectoryExists(Script_Directory) || !fs.FileExists(path.Resolve(path.Join($"{Script_Directory}", "main.js"))))
             {
                 SystemConsole.Print(null, $"Script Module not found, redownloading Script from Github");
