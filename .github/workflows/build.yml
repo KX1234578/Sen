@@ -1,0 +1,41 @@
+name: Build and Release SEN Tool
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build with Gradle
+        run: ./gradlew jar
+
+      - name: Download Launch4j
+        run: |
+          curl -L -o launch4j.zip https://sourceforge.net/projects/launch4j/files/latest/download
+          tar -xf launch4j.zip || unzip launch4j.zip
+        shell: bash
+
+      - name: Wrap JAR in EXE
+        run: |
+          ./launch4j*/launch4j .github/launch4j.xml
+        shell: bash
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: sen.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
