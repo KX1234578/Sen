@@ -19,8 +19,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build with Gradle
-        run: gradle jar
+      - name: Compile with javac
+        run: |
+          mkdir out
+          javac -d out src/Main.java
+
+      - name: Package into JAR
+        run: |
+          jar cfe sen.jar Main -C out .
 
       - name: Download Launch4j
         run: |
@@ -28,12 +34,12 @@ jobs:
           tar -xf launch4j.zip || unzip launch4j.zip
         shell: bash
 
-      - name: Wrap JAR in EXE
+      - name: Wrap into EXE
         run: |
           ./launch4j*/launch4j .github/launch4j.xml
         shell: bash
 
-      - name: Upload Release Asset
+      - name: Upload EXE to Release
         uses: softprops/action-gh-release@v1
         with:
           files: sen.exe
