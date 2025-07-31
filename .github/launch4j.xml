@@ -1,9 +1,9 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>build/libs/Sen.jar</jar>
+  <jar>sen.jar</jar>
   <outfile>sen.exe</outfile>
-  <errTitle>SEN Error</errTitle>
+  <errTitle>SEN Tool Error</errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
   <priority>normal</priority>
