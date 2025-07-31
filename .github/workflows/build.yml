@@ -1,4 +1,4 @@
-name: Build Shell Tool
+name: Build and Release SEN Tool
 
 on:
   push:
@@ -10,33 +10,36 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup .NET 8
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
 
-      - name: Restore and Build
-        run: |
-          dotnet publish -c Release -r win-x64 --self-contained true
-          dotnet publish -c Release -r win-x86 --self-contained true
-          dotnet publish -c Release -r win-arm64 --self-contained true
+      - name: Publish for win-x64
+        run: dotnet publish Shell/Sen.csproj -c Release -r win-x64 --self-contained true -o publish/win-x64
+
+      - name: Publish for win-x86
+        run: dotnet publish Shell/Sen.csproj -c Release -r win-x86 --self-contained true -o publish/win-x86
+
+      - name: Publish for win-arm64
+        run: dotnet publish Shell/Sen.csproj -c Release -r win-arm64 --self-contained true -o publish/win-arm64
 
       - name: Zip outputs
         run: |
-          Compress-Archive -Path "bin/Release/net8.0/win-x64/publish/*" -DestinationPath "shell.win-x64.zip"
-          Compress-Archive -Path "bin/Release/net8.0/win-x86/publish/*" -DestinationPath "shell.win-x86.zip"
-          Compress-Archive -Path "bin/Release/net8.0/win-arm64/publish/*" -DestinationPath "shell.win-arm64.zip"
+          Compress-Archive -Path "publish/win-x64/*" -DestinationPath "sen.win-x64.zip"
+          Compress-Archive -Path "publish/win-x86/*" -DestinationPath "sen.win-x86.zip"
+          Compress-Archive -Path "publish/win-arm64/*" -DestinationPath "sen.win-arm64.zip"
         shell: pwsh
 
-      - name: Upload Artifacts
+      - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            shell.win-x64.zip
-            shell.win-x86.zip
-            shell.win-arm64.zip
+            sen.win-x64.zip
+            sen.win-x86.zip
+            sen.win-arm64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
